@@ -1,0 +1,33 @@
+@startuml
+Actor User
+Participant Browser
+
+box Server
+    Participant HTTPServer
+    Participant HttpController
+    Participant MemberDao
+    Participant TaskDao
+end box
+
+database Postgres
+
+
+User -> Browser: Add Member/Tasks
+Browser -> HTTPServer: / or /index.html
+Browser <- HTTPServer: $.get(members/tasks)
+Browser -> HTTPServer: api/getTasks or api/getMembers
+HTTPServer -> HTTPServer: HttpController.get("api/getMembers || api/getTasks")
+HTTPServer -> HttpController: handle(get or post request)
+HttpController -> MemberDao: list members || add members
+HttpController -> TaskDao: list tasks || tasks
+MemberDao -> Postgres: SELECT * FROM Members || INSERT INTO Members VALUES ("user input")
+TaskDao -> Postgres: SELECT * FROM Tasks || INSERT INTO Tasks VALUES ("user input")
+MemberDao <-- Postgres: Get members
+TaskDao <-- Postgres: Get tasks
+HttpController <- MemberDao: List members
+HttpController <- TaskDao: List tasks
+HTTPServer <- HttpController: HttpMessage response
+Browser <- HTTPServer: HTML document with members/tasks
+User <- Browser: List of members or tasks
+
+@enduml

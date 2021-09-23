@@ -1,0 +1,26 @@
+@startuml
+
+entity Members {
+    userID
+    --
+    fullname
+    email
+}
+
+entity Tasks {
+    taskID
+    --
+    taskname
+    status
+}
+
+entity Taskref {
+    userID
+    taskID
+}
+
+
+Members }|-- Taskref
+Tasks }|-- Taskref
+
+@enduml
